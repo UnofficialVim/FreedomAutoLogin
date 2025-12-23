@@ -1,20 +1,51 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { TouchableOpacity, Text } from 'react-native';
+import { styles } from './StyleSheet';
+import HomeScreen from './screens/HomeScreen';
+import SettingsScreen from './screens/SettingsScreen';
+
+const Stack = createNativeStackNavigator();
+
+function Stackmanager() {
+  const navigation = useNavigation();
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerTitleAlign: 'left',
+          headerTitle: "\uD83C\uDF10 Freedom Auto Login",
+          headerRight: () => (
+            <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+              <Text style={styles.settingHeaderButton}>
+                Settings
+              </Text>
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+      <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          headerTitleAlign: 'center',
+        }}
+      />
+    </Stack.Navigator>
+  )
+}
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <NavigationContainer>
+      <Stackmanager />
       <StatusBar style="auto" />
-    </View>
+    </NavigationContainer>
+
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
