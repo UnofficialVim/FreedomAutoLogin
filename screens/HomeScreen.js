@@ -48,6 +48,9 @@ export default function HomeScreen() {
           webViewRef.current.injectJavaScript(script);
         }, 1000); // Wait 1 second for page to load
       }
+      else {
+        alert('Please enter both phone number and PIN');
+      }
     } catch (error) {
       console.error('Error in handleWebPage:', error);
     }
