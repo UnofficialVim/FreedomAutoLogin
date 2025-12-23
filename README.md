@@ -36,7 +36,7 @@ npm install
 This app requires:
 - **READ_SMS**: To read incoming verification codes
 - **RECEIVE_SMS**: To listen for new SMS messages
-Note: only the phone number and pin are stored locally on the device
+- **Note: only the phone number and pin are stored locally on the device
 
 
 ## Disclaimer
