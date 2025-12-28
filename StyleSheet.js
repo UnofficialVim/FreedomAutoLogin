@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-import SettingsScreen from "./screens/SettingsScreen";
 
 export const styles = StyleSheet.create({
     container: {
