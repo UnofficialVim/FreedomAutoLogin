@@ -1,11 +1,14 @@
 import { Text, View, TextInput, Pressable, Alert } from 'react-native';
 import { useEffect, useState } from 'react';
-import * as SecureStore from 'expo-secure-store';
+import { getSecure, setSecure } from '../utils/overrides';
 import { styles } from '../StyleSheet';
+import { isSMSPermissionGranted, requestReadSMSPermission } from '../utils/permissions';
+
 
 export default function SettingsScreen() {
   const [numberValue, setNumberValue] = useState('');
   const [pinValue, setPinValue] = useState('');
+  const [skipEntry, setSkipEntry] = useState(false);
 
     useEffect(() => {
         // Fetch the stored values from SecureStore when the component mounts
@@ -22,11 +25,13 @@ export default function SettingsScreen() {
 
     const loadStoredData = async () => {
         try {
-            const storedNumber = await SecureStore.getItemAsync('phoneNumber');
-            const storedPin = await SecureStore.getItemAsync('pin');
-            
+            const storedNumber = await getSecure('phoneNumber');
+            const storedPin = await getSecure('pin');
+            const skipEntry = await getSecure('skipEntryPage');
+
             if (storedNumber) setNumberValue(storedNumber);
             if (storedPin) setPinValue(storedPin);
+            if (skipEntry) setSkipEntry(skipEntry);
         } catch (error) {
             console.error('Error loading data:', error);
             Alert.alert('Error', 'Failed to load saved data. Recommended to reinstall the app.');
@@ -41,9 +46,10 @@ export default function SettingsScreen() {
     const saveData = async () => {
         try {
             // Save the numberValue and pinValue to SecureStore
-            await SecureStore.setItemAsync('phoneNumber', numberValue);
-            await SecureStore.setItemAsync('pin', pinValue);
-            
+            await setSecure('phoneNumber', numberValue);
+            await setSecure('pin', pinValue);
+            await setSecure('skipEntryPage', skipEntry);
+
             Alert.alert('Success', 'Data saved successfully!');
             return true;
         } catch (error) {
@@ -73,6 +79,12 @@ export default function SettingsScreen() {
         value={pinValue} 
         />
 
+        <Pressable
+          onPress={() => setSkipEntry(!skipEntry)}
+          style={skipEntry ? styles.SettingsScreen.toggleSwitch.true : styles.SettingsScreen.toggleSwitch.false}>
+            <Text style={styles.SettingsScreen.toggleSwitch.text}>Skip Entry Page</Text>
+          </Pressable>
+
         <Pressable 
         style={({ pressed }) => [
           styles.SettingsScreen.saveButton,
@@ -81,6 +93,17 @@ export default function SettingsScreen() {
         onPress={handleSavePress}>
           <Text style={styles.SettingsScreen.saveButtonText}>Save</Text>
         </Pressable>
+
+        <Pressable 
+        style={({ pressed }) => [
+          styles.SettingsScreen.saveButton,
+          pressed && styles.SettingsScreen.saveButtonPressed
+        ]}
+        onPress={requestReadSMSPermission}>
+          <Text style={styles.SettingsScreen.saveButtonText}>Change SMS Permission</Text>
+        </Pressable>
+
+          <Text style={styles.SettingsScreen.permissionStatus}>Current SMS Permission Status: {isSMSPermissionGranted().then((granted) => granted ? "Granted" : "Denied")}</Text>
     </View>
   );
 }

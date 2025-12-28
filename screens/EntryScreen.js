@@ -1,71 +1,57 @@
-import { View, Button, PermissionsAndroid } from 'react-native';
+import { View, PermissionsAndroid, Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
+import { requestReadSMSPermission } from '../utils/permissions';
+import { getSecure } from '../utils/overrides';
+import { styles } from '../StyleSheet';
 
 export default function EntryScreen() {
   const navigation = useNavigation();
   
-    useEffect(async () => {
-    //check if we have permissions on startup
+
+  useEffect(() => {
+    checkSMSPermission();
+  }, []);
+
+  useEffect(() => {
+    const checkStoredData = async () => {
+      const phoneNumber = await getSecure('phoneNumber');
+      const pin = await getSecure('pin');
+      const skipEntry = await getSecure('skipEntryPage');
+
+      if (skipEntry) {
+        navigation.replace('Home');
+      }
+      else if (phoneNumber === '' && pin === '') {
+        alert('Please enter your phone number and PIN in the Settings page');
+      }
+    };
+
+    checkStoredData();
+  }, []);
+
+  const checkSMSPermission = async () => {
     const granted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_SMS);
     if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
       requestReadSMSPermission();
       console.log("SMS permission not granted");
-    }
-    else {
+    } else {
       console.log("SMS permission granted");
     }
-}, []);
-
-  const requestReadSMSPermission = async () => {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_SMS,
-          {
-            title: "SMS Permission",
-            message: "This app needs access to your SMS messages in order to auto verify your otp",
-            buttonNeutral: "Ask Me Later",
-            buttonNegative: "Cancel",
-            buttonPositive: "OK"
-          }
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("SMS permission granted");
-        } else {
-          console.log("SMS permission denied");
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    };
-
-const requestCameraPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        {
-          title: "Camera Permission",
-            message: "This app needs access to your camera",
-            buttonNeutral: "Ask Me Later",
-            buttonNegative: "Cancel",
-            buttonPositive: "OK"
-        }
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("Camera permission granted");
-      } else {
-        console.log("Camera permission denied");
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
+  }; 
 
   return (
-    <View>
-      <Button title="Go to Home" onPress={() => navigation.replace('Home')} />
-      <Button title="set permissions" onPress={requestReadSMSPermission} />
-      <Button title="set camera permissions" onPress={requestCameraPermission} />
+    <View style={styles.container}>
+      <View style={styles.EntryScreen.LoginButtonContainer}>
+        <Pressable
+          onPress={() => navigation.replace('Home')}
+          style={({ pressed }) => [
+          styles.EntryScreen.loginButton,
+          pressed && styles.EntryScreen.loginButton.pressed
+        ]}>
+          <Text style={styles.EntryScreen.loginButtonText}>Login</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }

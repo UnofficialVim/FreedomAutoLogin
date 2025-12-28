@@ -17,7 +17,29 @@ export const styles = StyleSheet.create({
 
 
 
-
+    EntryScreen: {
+        loginButton: {
+            pressed: {
+                backgroundColor: '#005BBB',
+            },
+            backgroundColor: '#007AFF',
+            margin: 20,
+            padding: 20,
+            borderRadius: 10,
+            alignItems: 'center',
+        },
+        loginButtonText: {
+            color: '#fff',
+            fontSize: 20,
+            fontWeight: 'bold',
+        },
+        LoginButtonContainer: {
+            flex: 1,
+            justifyContent: 'flex-end',
+            padding: 20,
+            marginBottom: "50%"
+        },
+    },
 
 
     SettingsScreen: {
@@ -57,8 +79,34 @@ export const styles = StyleSheet.create({
             fontSize: 18,
             fontWeight: "bold",
         },
+        permissionStatus: {
+            fontSize: 20,
+            fontWeight: "bold",
+            marginTop: 20,
+        },
+        toggleSwitch: {
+            true: {
+                alignItems: "center",
+                minWidth: 200,
+                marginTop: 25,
+                padding: 10,
+                backgroundColor: "#c0ffc0",
+                borderRadius: 5,
+            },
+            false: {
+                alignItems: "center",
+                minWidth: 200,
+                marginTop: 25,
+                padding: 10,
+                backgroundColor: "#f0f0f0",
+                borderRadius: 5,
+        },
+        text: {
+            fontSize: 16,
+            fontWeight: "bold",
+        },
     }
+}});
 
-});
 
 export default styles;

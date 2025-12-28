@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, use } from 'react';
+import { useRef, useEffect } from 'react';
 import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import * as SecureStore from 'expo-secure-store';
@@ -49,7 +49,7 @@ export default function HomeScreen() {
         }, 1000); // Wait 1 second for page to load
       }
       else {
-        alert('Please enter both phone number and PIN');
+        console.log('Phone number or PIN not found in SecureStore');
       }
     } catch (error) {
       console.error('Error in handleWebPage:', error);
