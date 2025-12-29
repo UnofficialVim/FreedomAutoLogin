@@ -14,7 +14,11 @@ cd FreedomAutoLogin
 ```bash
 npm install
 ```
-
+3. Build or run expo
+```bash
+npx expo start
+eas build --local --platform android --profile preview
+```
 ## Usage
 
 ### First Time Setup
