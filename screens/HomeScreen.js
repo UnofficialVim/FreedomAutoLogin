@@ -120,27 +120,42 @@ export default function HomeScreen() {
   };
 
   const injectSecurityCode = (securityCode) => {
+    console.log('Injecting security code:', securityCode);
+    console.log('WebView ref exists:', !!webViewRef.current);
+    
     if (webViewRef.current) {
-      setTimeout(() => {
-        const script = `
-          function reactSetValue(input, value) {
-            const setter = Object.getOwnPropertyDescriptor(
-              HTMLInputElement.prototype,
-              "value"
-            ).set;
-            setter.call(input, value);
-            input.dispatchEvent(new Event("input", { bubbles: true }));
+      console.log('About to inject JavaScript...');
+      
+      const script = `
+        window.ReactNativeWebView.postMessage('Script executing - checking for security input...');
+        function reactSetValue(input, value) {
+          const setter = Object.getOwnPropertyDescriptor(
+            HTMLInputElement.prototype,
+            "value"
+          ).set;
+          setter.call(input, value);
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+        
+        const securityInput = document.getElementById("securityCodeInput");
+        window.ReactNativeWebView.postMessage('Security input found: ' + !!securityInput);
+        if (securityInput) {
+          window.ReactNativeWebView.postMessage('Setting value to: ${securityCode}');
+          reactSetValue(securityInput, "${securityCode}");
+          window.ReactNativeWebView.postMessage('Value set, current value: ' + securityInput.value);
+          
+          const form = securityInput.closest("form");
+          window.ReactNativeWebView.postMessage('Form found: ' + !!form);
+          if (form) {
+            form.requestSubmit();
+            window.ReactNativeWebView.postMessage('Form submitted');
           }
-          reactSetValue(document.getElementById("${htmlElements.securityCode}"), "${securityCode}");
-
-          const form = document
-            .getElementById("${htmlElements.securityCode}")
-            .closest("form");
-
-          form.requestSubmit();
-        `;
-        webViewRef.current.injectJavaScript(script);
-      }, 500);
+        }
+      `;
+      webViewRef.current.injectJavaScript(script);
+      console.log('JavaScript injection called');
+    } else {
+      console.log('WebView ref is null - cannot inject');
     }
   };
 
@@ -153,7 +168,8 @@ export default function HomeScreen() {
         if (otp) {
           console.log('OTP received:', otp[0]);
           console.log(otp[1] || otp[2]);
-          injectSecurityCode(toString(otp[1] || otp[2]));
+          const securityCode = otp[1] || otp[2];
+          injectSecurityCode(securityCode);
           subscription.remove();
         } else {
           console.log('No OTP found in the message body.');
@@ -181,6 +197,10 @@ export default function HomeScreen() {
           onLoadEnd={() => {
             handleLoginPage();
             console.log('Webpage loaded');
+          }}
+          onMessage={(event) => {
+            const message = event.nativeEvent.data;
+            console.log('WebView Message:', message);
           }}
           onNavigationStateChange={(navState) => {
             console.log('URL changed to:', navState.url);
