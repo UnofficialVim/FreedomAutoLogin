@@ -13,7 +13,14 @@ function Stackmanager() {
 
   const navigation = useNavigation();
   return (
-    <Stack.Navigator>
+    <Stack.Navigator 
+    screenOptions={
+      {
+        headerStyle: styles.headerStyle,
+        animation: 'fade'
+      }
+    }
+    >
       <Stack.Screen
         name="Entry"
         component={EntryScreen}

@@ -4,6 +4,7 @@ import { WebView } from 'react-native-webview';
 import { getSecure } from '../utils/overrides';
 import SmsListener from 'react-native-android-sms-listener'
 import { styles } from '../StyleSheet';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function HomeScreen() {
   const webViewRef = useRef(null);
@@ -144,55 +145,62 @@ export default function HomeScreen() {
   };
 
   const handleSecurityCodePage = async () => {
-       console.log('Creating SMS Listener');
-       let subscription = SmsListener.addListener(message => {
-         try {
-           let otpRegex = /Enter\s+(\d{6})\s+to\s+login|(?=.*\bfreedom\b).*?\b(\d{6})\b/i; 
-           let otp = message.body.match(otpRegex);
-           if (otp) {
-             console.log('OTP received:', otp[0]);
-             console.log(otp[1] || otp[2]);
-             injectSecurityCode(toString(otp[1] || otp[2]));
-             subscription.remove();
-           } else {
-             console.log('No OTP found in the message body.');
-           }
-         } catch (error) {
-           console.error('Error processing SMS message:', error);
-           console.error('Removing SMS listener due to error.');
-           subscription.remove();
-         }
-       });
+    console.log('Creating SMS Listener');
+    let subscription = SmsListener.addListener(message => {
+      try {
+        let otpRegex = /Enter\s+(\d{6})\s+to\s+login|(?=.*\bfreedom\b).*?\b(\d{6})\b/i;
+        let otp = message.body.match(otpRegex);
+        if (otp) {
+          console.log('OTP received:', otp[0]);
+          console.log(otp[1] || otp[2]);
+          injectSecurityCode(toString(otp[1] || otp[2]));
+          subscription.remove();
+        } else {
+          console.log('No OTP found in the message body.');
+        }
+      } catch (error) {
+        console.error('Error processing SMS message:', error);
+        console.error('Removing SMS listener due to error.');
+        subscription.remove();
+      }
+    });
   };
 
   return (
-    <View style={styles.container}>
-      <WebView
-        ref={webViewRef}
-        source={{ uri: 'https://login.freedommobile.ca' }}
-        style={styles.webView}
-        onLoadEnd={() => {
-          handleLoginPage();
-          console.log('Webpage loaded');
-        }}
-        onNavigationStateChange={(navState) => {
-          console.log('URL changed to:', navState.url);
-          console.log('Loading:', navState.loading);
-          
-          // You can add your logic here based on the URL
-          if (navState.url.includes('account-verification') && !navState.loading) {
-            console.log('Handling verification page...');
-            handleVerificationPage();
-          }
-          if (navState.url.includes('authenticate-code') && !navState.loading) {
-            console.log('Handling security code page...');
-            handleSecurityCodePage();
-          }
-        }}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        javaScriptCanOpenWindowsAutomatically={true}
-      />
-    </View>
+    <LinearGradient
+      colors={['#EC7F23', '#673AB7']}
+      start={{ x: 0.15, y: 0.0 }}   // near top-left
+      end={{ x: 0.85, y: 1.0 }}     // bottom-right
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        <WebView
+          ref={webViewRef}
+          source={{ uri: 'https://login.freedommobile.ca' }}
+          style={styles.webView}
+          onLoadEnd={() => {
+            handleLoginPage();
+            console.log('Webpage loaded');
+          }}
+          onNavigationStateChange={(navState) => {
+            console.log('URL changed to:', navState.url);
+            console.log('Loading:', navState.loading);
+
+            // You can add your logic here based on the URL
+            if (navState.url.includes('account-verification') && !navState.loading) {
+              console.log('Handling verification page...');
+              handleVerificationPage();
+            }
+            if (navState.url.includes('authenticate-code') && !navState.loading) {
+              console.log('Handling security code page...');
+              handleSecurityCodePage();
+            }
+          }}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          javaScriptCanOpenWindowsAutomatically={true}
+        />
+      </View>
+    </LinearGradient>
   );
 }

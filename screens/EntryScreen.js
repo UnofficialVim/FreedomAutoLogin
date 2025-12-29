@@ -4,8 +4,7 @@ import { useEffect } from 'react';
 import { checkReadSMSPermission, checkReceiveSMSPermission } from '../utils/permissions';
 import { getSecure } from '../utils/overrides';
 import { styles } from '../StyleSheet';
-
-import SmsListener from 'react-native-android-sms-listener'
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function EntryScreen() {
   const navigation = useNavigation();
@@ -33,23 +32,32 @@ export default function EntryScreen() {
   }, []);
 
   const checkSMSPermission = async () => {
-      checkReadSMSPermission();
-      checkReceiveSMSPermission();
+    checkReadSMSPermission();
+    checkReceiveSMSPermission();
   }
 
 
   return (
     <View style={styles.container}>
-      <View style={styles.EntryScreen.LoginButtonContainer}>
-        <Pressable
-          onPress={() => navigation.replace('Home')}
-          style={({ pressed }) => [
-            styles.EntryScreen.loginButton,
-            pressed && styles.EntryScreen.loginButton.pressed
-          ]}>
-          <Text style={styles.EntryScreen.loginButtonText}>Login</Text>
-        </Pressable>
-      </View>
+      <LinearGradient
+        colors={['#EC7F23', '#673AB7']}
+        start={{ x: 0.15, y: 0.0 }}   // near top-left
+        end={{ x: 0.85, y: 1.0 }}     // bottom-right
+        style={{ flex: 1 }}
+      >
+        <View style={styles.EntryScreen.LoginButtonContainer}>
+
+          <Pressable
+            onPress={() => navigation.replace('Home')}
+            style={({ pressed }) => [
+              styles.EntryScreen.loginButton,
+              pressed && styles.EntryScreen.loginButton.pressed
+            ]}>
+            <Text style={styles.EntryScreen.loginButtonText}>Login</Text>
+          </Pressable>
+
+        </View>
+      </LinearGradient>
     </View>
   );
 }

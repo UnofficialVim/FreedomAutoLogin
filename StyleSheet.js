@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "#ec7f23",
     },
     webView: {
         flex: 1,
@@ -13,7 +13,14 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         marginRight: 10
     },
-
+    ImageBackground: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+    headerStyle: {
+        backgroundColor: '#ec7f23',
+    },
 
 
 
@@ -46,19 +53,20 @@ export const styles = StyleSheet.create({
         container: {
             alignItems: "center",
             flex: 1,
-            backgroundColor: "#fff",
             padding: 20
         },
         title: {
-            fontSize: 24,
+            fontSize: 26,
             fontWeight: "bold",
-            marginBottom: 10
+            marginBottom: 10,
+            color: "#fff"
         },
         input: {
             height: 50,
             borderColor: "gray",
+            backgroundColor: "#fff",
             borderWidth: 1,
-            borderRadius: 5,
+            borderRadius: 10,
             paddingHorizontal: 10,
             minWidth: 300,
             fontSize: 20,
@@ -66,7 +74,7 @@ export const styles = StyleSheet.create({
         saveButton: {
             backgroundColor: "#ec7f23",
             paddingVertical: 20,
-            borderRadius: 5,
+            borderRadius: 10,
             alignItems: "center",
             marginTop: 30,
             minWidth: 300,
