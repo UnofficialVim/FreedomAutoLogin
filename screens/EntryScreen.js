@@ -36,7 +36,6 @@ export default function EntryScreen() {
     checkReceiveSMSPermission();
   }
 
-
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -46,7 +45,6 @@ export default function EntryScreen() {
         style={{ flex: 1 }}
       >
         <View style={styles.EntryScreen.LoginButtonContainer}>
-
           <Pressable
             onPress={() => navigation.replace('Home')}
             style={({ pressed }) => [
