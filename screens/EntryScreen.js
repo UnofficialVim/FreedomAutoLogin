@@ -1,7 +1,7 @@
 import { View, PermissionsAndroid, Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
-import { requestReadSMSPermission } from '../utils/permissions';
+import { requestReadSMSPermission, requestReceiveSMSPermission}from '../utils/permissions';
 import { getSecure } from '../utils/overrides';
 import { styles } from '../StyleSheet';
 
@@ -37,6 +37,13 @@ export default function EntryScreen() {
       console.log("SMS permission not granted");
     } else {
       console.log("SMS permission granted");
+    }
+    const receiveGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECEIVE_SMS);
+    if (receiveGranted !== PermissionsAndroid.RESULTS.GRANTED) {
+      requestReceiveSMSPermission();
+      console.log("Receive SMS permission not granted");
+    } else {
+      console.log("Receive SMS permission granted");
     }
   }; 
 

@@ -145,47 +145,76 @@ export default function HomeScreen() {
 
   const handleSecurityCodePage = async () => {
     try {
-      console.log('Setting up SMS listener for verification code...');
+      console.log('Starting SMS listener for verification codes...');
       
+      // Remove any existing listeners first
+      try {
+        SmsListener.removeListener();
+      } catch (e) {
+        console.log('No existing listener to remove');
+      }
+      
+      // Set up new SMS listener
       const subscription = SmsListener.addListener(message => {
-        console.log('SMS received:', message);
+        console.log('RAW SMS RECEIVED:');
+        console.log('From:', message.originatingAddress);
+        console.log('Body:', message.body);
+        console.log('Timestamp:', message.timestamp);
         
-        const isFreedomSms = message.originatingAddress.toLowerCase().includes('freedom') ||
-                            message.body.toLowerCase().includes('freedom') ||
-                            message.body.toLowerCase().includes('verification');
+        // Check if message contains Freedom Mobile indicators
+        const messageBody = message.body.toLowerCase();
+        const sender = message.originatingAddress.toLowerCase();
+        
+        const isFreedomSms = 
+          sender.includes('freedom') || 
+          messageBody.includes('freedom') || 
+          messageBody.includes('verification') ||
+          messageBody.includes('enter') ||
+          messageBody.includes('code');
+        
+        console.log('Is Freedom SMS:', isFreedomSms);
         
         if (isFreedomSms) {
-          let verificationCode = null;
+          // Try multiple patterns to extract the code
           const patterns = [
-            /Your verification code: ([\d]{6})/i,
-            /verification code is ([\d]{6})/i,
-            /code: ([\d]{6})/i,
-            /\b(\d{6})\b/
+            /enter (\d{6})/i,
+            /code[:\s]*(\d{6})/i,
+            /verification[:\s]*(\d{6})/i,
+            /(\d{6})/g  // Any 6 digits as fallback
           ];
           
-          for (const pattern of patterns) {
-            const match = message.body.match(pattern);
+          let verificationCode = null;
+          
+          for (let i = 0; i < patterns.length; i++) {
+            const match = message.body.match(patterns[i]);
             if (match) {
               verificationCode = match[1];
+              console.log(`Code found with pattern ${i + 1}:`, verificationCode);
               break;
             }
           }
           
-          if (verificationCode) {
+          if (verificationCode && verificationCode.length === 6) {
             console.log('Extracted verification code:', verificationCode);
             
+            // Inject the code into the webpage
             injectSecurityCode(verificationCode);
             
+            // Remove the listener after successful extraction
             subscription.remove();
             console.log('SMS listener removed after successful code extraction');
           } else {
-            console.log('Could not extract verification code from SMS body:', message.body);
+            console.log('Could not extract 6-digit code from SMS:', message.body);
           }
+        } else {
+          console.log('SMS not from Freedom Mobile, ignoring');
         }
       });
       
+      console.log('SMS listener is now active and waiting for messages...');
+      
     } catch (error) {
-      console.error('Error in handleSecurityCodePage:', error);
+      console.error('Error setting up SMS listener:', error);
     }
   };
 
@@ -214,11 +243,14 @@ export default function HomeScreen() {
         onNavigationStateChange={(navState) => {
           console.log('URL changed to:', navState.url);
           console.log('Loading:', navState.loading);
+          
           // You can add your logic here based on the URL
           if (navState.url.includes('account-verification') && !navState.loading) {
+            console.log('Handling verification page...');
             handleVerificationPage();
           }
           if (navState.url.includes('authenticate-code') && !navState.loading) {
+            console.log('Handling security code page...');
             handleSecurityCodePage();
           }
         }}
