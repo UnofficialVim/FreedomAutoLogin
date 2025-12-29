@@ -120,6 +120,7 @@ export default function HomeScreen() {
   };
 
   const injectSecurityCode = (securityCode) => {
+    console.log('Injecting security code:', securityCode);// Debug log
     if (webViewRef.current) {
       setTimeout(() => {
         const script = `
@@ -140,6 +141,7 @@ export default function HomeScreen() {
           form.requestSubmit();
         `;
         webViewRef.current.injectJavaScript(script);
+        console.log('Security code attempted injected', securityCode);// Debug log
       }, 500);
     }
   };
@@ -153,7 +155,8 @@ export default function HomeScreen() {
         if (otp) {
           console.log('OTP received:', otp[0]);
           console.log(otp[1] || otp[2]);
-          injectSecurityCode(toString(otp[1] || otp[2]));
+          const securityCode = otp[1] || otp[2];
+          injectSecurityCode(securityCode);
           subscription.remove();
         } else {
           console.log('No OTP found in the message body.');
