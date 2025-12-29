@@ -1,9 +1,10 @@
-import React, { useRef, useEffect, use } from 'react';
+import { useRef, useEffect } from 'react';
 import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
-import * as SecureStore from 'expo-secure-store';
+import { getSecure } from '../utils/overrides';
 import SmsListener from 'react-native-android-sms-listener'
 import { styles } from '../StyleSheet';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function HomeScreen() {
   const webViewRef = useRef(null);
@@ -20,8 +21,8 @@ export default function HomeScreen() {
   const handleLoginPage = async () => {
     try {
       // Get phone number and pin from SecureStore and inject into webview
-      const phoneNumber = await SecureStore.getItemAsync('phoneNumber');
-      const pin = await SecureStore.getItemAsync('pin');
+      const phoneNumber = await getSecure('phoneNumber');
+      const pin = await getSecure('pin');
 
       if (phoneNumber && pin && webViewRef.current) {
         setTimeout(() => {
@@ -49,7 +50,7 @@ export default function HomeScreen() {
         }, 1000); // Wait 1 second for page to load
       }
       else {
-        alert('Please enter both phone number and PIN');
+        console.log('Phone number or PIN not found in SecureStore');
       }
     } catch (error) {
       console.error('Error in handleWebPage:', error);
@@ -59,7 +60,7 @@ export default function HomeScreen() {
   const handleVerificationPage = async () => {
     try {
 
-      const phoneNumber = await SecureStore.getItemAsync('phoneNumber');
+      const phoneNumber = await getSecure('phoneNumber');
       if (phoneNumber && webViewRef.current) {
         setTimeout(() => {
           const script = `
@@ -144,88 +145,62 @@ export default function HomeScreen() {
   };
 
   const handleSecurityCodePage = async () => {
-    try {
-      console.log('Setting up SMS listener for verification code...');
-      
-      const subscription = SmsListener.addListener(message => {
-        console.log('SMS received:', message);
-        
-        const isFreedomSms = message.originatingAddress.toLowerCase().includes('freedom') ||
-                            message.body.toLowerCase().includes('freedom') ||
-                            message.body.toLowerCase().includes('verification');
-        
-        if (isFreedomSms) {
-          let verificationCode = null;
-          const patterns = [
-            /Your verification code: ([\d]{6})/i,
-            /verification code is ([\d]{6})/i,
-            /code: ([\d]{6})/i,
-            /\b(\d{6})\b/
-          ];
-          
-          for (const pattern of patterns) {
-            const match = message.body.match(pattern);
-            if (match) {
-              verificationCode = match[1];
-              break;
-            }
-          }
-          
-          if (verificationCode) {
-            console.log('Extracted verification code:', verificationCode);
-            
-            injectSecurityCode(verificationCode);
-            
-            subscription.remove();
-            console.log('SMS listener removed after successful code extraction');
-          } else {
-            console.log('Could not extract verification code from SMS body:', message.body);
-          }
+    console.log('Creating SMS Listener');
+    let subscription = SmsListener.addListener(message => {
+      try {
+        let otpRegex = /Enter\s+(\d{6})\s+to\s+login|(?=.*\bfreedom\b).*?\b(\d{6})\b/i;
+        let otp = message.body.match(otpRegex);
+        if (otp) {
+          console.log('OTP received:', otp[0]);
+          console.log(otp[1] || otp[2]);
+          injectSecurityCode(toString(otp[1] || otp[2]));
+          subscription.remove();
+        } else {
+          console.log('No OTP found in the message body.');
         }
-      });
-      
-    } catch (error) {
-      console.error('Error in handleSecurityCodePage:', error);
-    }
+      } catch (error) {
+        console.error('Error processing SMS message:', error);
+        console.error('Removing SMS listener due to error.');
+        subscription.remove();
+      }
+    });
   };
 
-  useEffect(() => {
-    return () => {
-      // Clean up SMS listener when component unmounts
-      try {
-        SmsListener.removeListener();
-        console.log('SMS listener cleaned up on component unmount');
-      } catch (error) {
-        console.log('No SMS listener to clean up');
-      }
-    };
-  }, []);
-
   return (
-    <View style={styles.container}>
-      <WebView
-        ref={webViewRef}
-        source={{ uri: 'https://login.freedommobile.ca' }}
-        style={styles.webView}
-        onLoadEnd={() => {
-          handleLoginPage();
-          console.log('Webpage loaded');
-        }}
-        onNavigationStateChange={(navState) => {
-          console.log('URL changed to:', navState.url);
-          console.log('Loading:', navState.loading);
-          // You can add your logic here based on the URL
-          if (navState.url.includes('account-verification') && !navState.loading) {
-            handleVerificationPage();
-          }
-          if (navState.url.includes('authenticate-code') && !navState.loading) {
-            handleSecurityCodePage();
-          }
-        }}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        javaScriptCanOpenWindowsAutomatically={true}
-      />
-    </View>
+    <LinearGradient
+      colors={['#EC7F23', '#673AB7']}
+      start={{ x: 0.15, y: 0.0 }}   // near top-left
+      end={{ x: 0.85, y: 1.0 }}     // bottom-right
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        <WebView
+          ref={webViewRef}
+          source={{ uri: 'https://login.freedommobile.ca' }}
+          style={styles.webView}
+          onLoadEnd={() => {
+            handleLoginPage();
+            console.log('Webpage loaded');
+          }}
+          onNavigationStateChange={(navState) => {
+            console.log('URL changed to:', navState.url);
+            console.log('Loading:', navState.loading);
+
+            // You can add your logic here based on the URL
+            if (navState.url.includes('account-verification') && !navState.loading) {
+              console.log('Handling verification page...');
+              handleVerificationPage();
+            }
+            if (navState.url.includes('authenticate-code') && !navState.loading) {
+              console.log('Handling security code page...');
+              handleSecurityCodePage();
+            }
+          }}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          javaScriptCanOpenWindowsAutomatically={true}
+        />
+      </View>
+    </LinearGradient>
   );
 }
