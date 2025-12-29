@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ec7f23"
     },
     "ios": {
       "supportsTablet": true
@@ -20,9 +20,15 @@
         "android.permission.READ_SMS",
         "android.permission.RECEIVE_SMS"
       ],
+      "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ec7f23"
+      },
+      "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ec7f23"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.freedomautologin.app"

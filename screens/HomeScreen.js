@@ -144,7 +144,25 @@ export default function HomeScreen() {
   };
 
   const handleSecurityCodePage = async () => {
-   return;
+       console.log('Creating SMS Listener');
+       let subscription = SmsListener.addListener(message => {
+         try {
+           let otpRegex = /Enter\s+(\d{6})\s+to\s+login|(?=.*\bfreedom\b).*?\b(\d{6})\b/i; 
+           let otp = message.body.match(otpRegex);
+           if (otp) {
+             console.log('OTP received:', otp[0]);
+             console.log(otp[1] || otp[2]);
+             injectSecurityCode(toString(otp[1] || otp[2]));
+             subscription.remove();
+           } else {
+             console.log('No OTP found in the message body.');
+           }
+         } catch (error) {
+           console.error('Error processing SMS message:', error);
+           console.error('Removing SMS listener due to error.');
+           subscription.remove();
+         }
+       });
   };
 
   return (

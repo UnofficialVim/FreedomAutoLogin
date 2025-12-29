@@ -20,9 +20,9 @@ export const styles = StyleSheet.create({
     EntryScreen: {
         loginButton: {
             pressed: {
-                backgroundColor: '#005BBB',
+                backgroundColor: '#d96f1f',
             },
-            backgroundColor: '#007AFF',
+            backgroundColor: '#ec7f23',
             margin: 20,
             padding: 20,
             borderRadius: 10,
@@ -64,7 +64,7 @@ export const styles = StyleSheet.create({
             fontSize: 20,
         },
         saveButton: {
-            backgroundColor: "#007AFF",
+            backgroundColor: "#ec7f23",
             paddingVertical: 20,
             borderRadius: 5,
             alignItems: "center",
@@ -72,7 +72,7 @@ export const styles = StyleSheet.create({
             minWidth: 300,
         },
         saveButtonPressed: {
-            backgroundColor: "#005BBB",
+            backgroundColor: "#d96f1f",
         },
         saveButtonText: {
             color: "#fff",

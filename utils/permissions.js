@@ -1,7 +1,27 @@
 
   import { PermissionsAndroid } from 'react-native';
 
-  export const requestReadSMSPermission = async () => {
+  export const checkReadSMSPermission = async () => {
+      const granted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_SMS);
+      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          requestReadSMSPermission();
+      }
+      else {
+          console.log("Read SMS permission granted");
+      }
+  };
+
+  export const checkReceiveSMSPermission = async () => {
+      const granted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECEIVE_SMS);
+      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          requestReceiveSMSPermission();
+      }
+      else {
+          console.log("Receive SMS permission granted");
+      }
+  };
+
+  const requestReadSMSPermission = async () => {
       try {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.READ_SMS,
@@ -14,16 +34,15 @@
           }
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("SMS permission granted");
+          console.log("Read SMS permission granted");
         } else {
-          console.log("SMS permission denied");
+          console.log("Read SMS permission denied");
         }
       } catch (err) {
         console.warn(err);
       }
     };
-
-    export const requestReceiveSMSPermission = async () => {
+ const requestReceiveSMSPermission = async () => {
       try {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
@@ -36,9 +55,9 @@
           }
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("SMS permission granted");
+          console.log("Receive SMS permission granted");
         } else {
-          console.log("SMS permission denied");
+          console.log("Receive SMS permission denied");
         }
       } catch (err) {
         console.warn(err);
