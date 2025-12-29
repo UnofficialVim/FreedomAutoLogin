@@ -49,8 +49,12 @@ This app automates the login process for convenience. Users are responsible for:
 - Keeping their credentials secure
 - Complying with Freedom Mobile's terms of service
 - Understanding the security implications of automated login
-  
-##NOTE
-This cannot be, nor should be uploaded to the google play store as READ_SMS is highly restricted. 
-You can read more at https://support.google.com/googleplay/android-developer/answer/10208820?hl=en#zippy=
+
+## NOTE
+
+This cannot be, nor should be uploaded to the Google Play Store, as `READ_SMS` is highly restricted.
+
+You can read more at:
+https://support.google.com/googleplay/android-developer/answer/10208820?hl=en#zippy=
+
 ---
