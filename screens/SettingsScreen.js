@@ -94,7 +94,7 @@ export default function SettingsScreen() {
           <Text style={styles.SettingsScreen.saveButtonText}>Save</Text>
         </Pressable>
 
-        <Pressable 
+        {/* <Pressable 
         style={({ pressed }) => [
           styles.SettingsScreen.saveButton,
           pressed && styles.SettingsScreen.saveButtonPressed
@@ -103,7 +103,7 @@ export default function SettingsScreen() {
           <Text style={styles.SettingsScreen.saveButtonText}>Change SMS Permission</Text>
         </Pressable>
 
-          <Text style={styles.SettingsScreen.permissionStatus}>Current SMS Permission Status: {isSMSPermissionGranted().then((granted) => granted ? "Granted" : "Denied")}</Text>
+          <Text style={styles.SettingsScreen.permissionStatus}>Current SMS Permission Status: {isSMSPermissionGranted() ? "Granted" : "Denied"}</Text> */}
     </View>
   );
 }

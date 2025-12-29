@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
-import * as SecureStore from 'expo-secure-store';
+import { getSecure } from '../utils/overrides';
 import SmsListener from 'react-native-android-sms-listener'
 import { styles } from '../StyleSheet';
 
@@ -20,8 +20,8 @@ export default function HomeScreen() {
   const handleLoginPage = async () => {
     try {
       // Get phone number and pin from SecureStore and inject into webview
-      const phoneNumber = await SecureStore.getItemAsync('phoneNumber');
-      const pin = await SecureStore.getItemAsync('pin');
+      const phoneNumber = await getSecure('phoneNumber');
+      const pin = await getSecure('pin');
 
       if (phoneNumber && pin && webViewRef.current) {
         setTimeout(() => {
@@ -59,7 +59,7 @@ export default function HomeScreen() {
   const handleVerificationPage = async () => {
     try {
 
-      const phoneNumber = await SecureStore.getItemAsync('phoneNumber');
+      const phoneNumber = await getSecure('phoneNumber');
       if (phoneNumber && webViewRef.current) {
         setTimeout(() => {
           const script = `
