@@ -1,4 +1,4 @@
-import { View, Pressable, Text } from 'react-native';
+import { View, Pressable, Text, Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { checkReadSMSPermission, checkReceiveSMSPermission } from '../utils/permissions';
@@ -44,6 +44,11 @@ export default function EntryScreen() {
         end={{ x: 0.85, y: 1.0 }}     // bottom-right
         style={{ flex: 1 }}
       >
+        <Image
+        source={require('../assets/ic_launcher_foreground.png')}
+        style={styles.EntryScreen.logo}
+        resizeMode="contain"
+      />
         <View style={styles.EntryScreen.LoginButtonContainer}>
           <Pressable
             onPress={() => navigation.replace('Home')}

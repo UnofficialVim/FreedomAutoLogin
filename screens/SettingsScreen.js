@@ -39,7 +39,6 @@ export default function SettingsScreen() {
   };
 
   function handleSavePress() {
-    // Handle save button press
     saveData();
   }
 
@@ -84,6 +83,7 @@ export default function SettingsScreen() {
           maxLength={6}
           onChangeText={handlePinChange}
           value={pinValue}
+          secureTextEntry={true}
         />
 
         <Pressable

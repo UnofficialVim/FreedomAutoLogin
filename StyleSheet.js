@@ -46,6 +46,11 @@ export const styles = StyleSheet.create({
             padding: 20,
             marginBottom: "50%"
         },
+        logo: {
+            width: "100%",
+            height: "50%",
+            
+        }
     },
 
 
