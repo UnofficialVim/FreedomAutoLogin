@@ -9,7 +9,6 @@ A React Native app that automatically handles the Freedom Mobile login process, 
 git clone <repository-url>
 cd FreedomAutoLogin
 ```
-
 2. Install dependencies:
 ```bash
 npm install
@@ -19,6 +18,14 @@ npm install
 npx expo start
 eas build --local --platform android --profile preview
 ```
+
+## Prebuilt Builds
+
+If you don’t want to build the app yourself, prebuilt APKs are available on the GitHub Releases page.
+
+Download the latest release here:  
+https://github.com/UnofficialVim/FreedomAutoLogin/releases
+
 ## Usage
 
 ### First Time Setup
@@ -49,5 +56,12 @@ This app automates the login process for convenience. Users are responsible for:
 - Keeping their credentials secure
 - Complying with Freedom Mobile's terms of service
 - Understanding the security implications of automated login
+
+## NOTE
+
+This cannot be, nor should be uploaded to the Google Play Store, as `READ_SMS` is highly restricted.
+
+You can read more at:
+https://support.google.com/googleplay/android-developer/answer/10208820?hl=en#zippy=
 
 ---

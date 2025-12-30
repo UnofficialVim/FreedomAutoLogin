@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TouchableOpacity, Text, } from 'react-native';
@@ -67,7 +66,6 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stackmanager />
-      <StatusBar style="auto" />
     </NavigationContainer>
 
   );
