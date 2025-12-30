@@ -31,7 +31,7 @@
       "backgroundColor": "#ec7f23"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.freedomautologin.app",
+      "package": "com.freedomautologin.app"
     },
     "androidNavigationBar": {
       "barStyle": "dark-content",
