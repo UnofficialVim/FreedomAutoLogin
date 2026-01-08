@@ -193,26 +193,6 @@ export default function HomeScreen() {
       console.log('About to inject JavaScript...');
 
       const script = `
-        function waitForElements(maxAttempts = 20) {
-          let attempts = 0;
-
-          function check() {
-            attempts++;
-            const textbox = document.getElementById("securityCodeInput");
-
-            if (textbox) {
-              inject();
-            } else if (attempts < maxAttempts) {
-              setTimeout(check, 200);
-            } else {
-              console.error('Login elements not found after maximum attempts');
-            }
-          }
-
-          check();
-        }
-
-      function inject() {
         window.ReactNativeWebView.postMessage('Script executing - checking for security input...');
         function reactSetValue(input, value) {
           const setter = Object.getOwnPropertyDescriptor(
@@ -237,8 +217,6 @@ export default function HomeScreen() {
             window.ReactNativeWebView.postMessage('Form submitted');
           }
         }
-      }
-      waitForElements();
       `;
       webViewRef.current.injectJavaScript(script);
       console.log('JavaScript injection called');
