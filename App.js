@@ -5,11 +5,11 @@ import { styles } from './StyleSheet';
 import HomeScreen from './screens/HomeScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import EntryScreen from './screens/EntryScreen';
+import { AppProvider } from './utils/appContext';
 
 const Stack = createNativeStackNavigator();
 
 function Stackmanager() {
-
   const navigation = useNavigation();
   return (
     <Stack.Navigator
@@ -49,7 +49,6 @@ function Stackmanager() {
           ),
         }}
       />
-
       <Stack.Screen
         name="Settings"
         component={SettingsScreen}
@@ -62,12 +61,12 @@ function Stackmanager() {
 }
 
 export default function App() {
-  
-
   return (
+    <AppProvider>
       <NavigationContainer>
         <Stackmanager />
       </NavigationContainer>
+    </AppProvider>
   );
 }
 
