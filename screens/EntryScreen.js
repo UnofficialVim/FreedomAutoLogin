@@ -10,14 +10,16 @@ export default function EntryScreen() {
   const navigation = useNavigation();
 
   useEffect(() => {
-    if(ensureAndroidPermissionGranted(
-      PermissionsAndroid.PERMISSIONS.READ_SMS,
-      PermissionsAndroid.PERMISSIONS.RECEIVE_SMS
-    )) {
-      console.log("SMS permissions granted");
-    } else {
-      console.error("SMS permissions not granted");
-    }
+    ensureAndroidPermissionGranted(
+      PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
+      PermissionsAndroid.PERMISSIONS.READ_SMS
+    ).then((result) => {
+      console.log("Permissions granted:", result.granted);
+      console.log("Permissions denied:", result.denied);
+      if (result.error) {
+        console.error("Error while requesting permissions:", result.error);
+      }
+    });
   }, []);
 
   return (

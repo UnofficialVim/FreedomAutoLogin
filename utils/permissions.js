@@ -2,23 +2,33 @@
 import { PermissionsAndroid } from 'react-native';
 
 export const ensureAndroidPermissionGranted = async (...permissions) => {
-  console.log("Checking Android permissions:", permissions);
   try {
-    for (const permission of permissions) {
-      let granted = await PermissionsAndroid.check(permission);
-
-      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        granted = await PermissionsAndroid.request(permission);
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          console.log(`${permission} permission denied`);
-          return false;
+    let deniedPermissions = [];
+    let grantedPermissions = [];
+    const checkResults = await Promise.all(permissions.map(permission => PermissionsAndroid.check(permission)));
+    const permissionsToRequest = permissions.filter((_, i) => checkResults[i] !== true);
+    if (permissionsToRequest.length > 0) {
+      const requestResults = await PermissionsAndroid.requestMultiple(permissionsToRequest);
+      for (const [permission, result] of Object.entries(requestResults)) {
+        if (result === PermissionsAndroid.RESULTS.GRANTED) {
+          grantedPermissions.push(permission);
+        } else {
+          deniedPermissions.push(permission);
         }
       }
-      console.log(`${permission} permission granted`);
-      return true;
+      return { 
+        granted: grantedPermissions.length > 0 ? grantedPermissions : null, 
+        denied: deniedPermissions.length > 0 ? deniedPermissions : null 
+      };
     }
+    return { granted: permissions, denied: null };
   } catch (error) {
     console.error("Error checking permissions:", error);
+    return {
+      granted: grantedPermissions.length > 0 ? grantedPermissions : null,
+      denied: deniedPermissions.length > 0 ? deniedPermissions : null,
+      error: error
+    };
   }
 };
 
