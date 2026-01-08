@@ -3,15 +3,15 @@ import { useEffect, useState } from 'react';
 import { getSecure, setSecure } from '../utils/overrides';
 import { styles } from '../StyleSheet';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { useAppContext } from '../utils/appContext';
 
 export default function SettingsScreen() {
   const [numberValue, setNumberValue] = useState('');
   const [pinValue, setPinValue] = useState('');
   const [skipEntry, setSkipEntry] = useState(false);
+  const { doWebViewReload, setDoWebViewReload } = useAppContext();
 
   useEffect(() => {
-    // Fetch the stored values from SecureStore when the component mounts
     loadStoredData();
   }, []);
 
@@ -40,11 +40,11 @@ export default function SettingsScreen() {
 
   function handleSavePress() {
     saveData();
+    setDoWebViewReload(true);
   }
 
   const saveData = async () => {
     try {
-      // Save the numberValue and pinValue to SecureStore
       await setSecure('phoneNumber', numberValue);
       await setSecure('pin', pinValue);
       await setSecure('skipEntryPage', skipEntry);
@@ -61,8 +61,8 @@ export default function SettingsScreen() {
   return (
     <LinearGradient
       colors={['#EC7F23', '#673AB7']}
-      start={{ x: 0.15, y: 0.0 }}   // near top-left
-      end={{ x: 0.85, y: 1.0 }}     // bottom-right
+      start={{ x: 0.15, y: 0.0 }}   
+      end={{ x: 0.85, y: 1.0 }}     
       style={{ flex: 1 }}
     >
       <View style={styles.SettingsScreen.container}>

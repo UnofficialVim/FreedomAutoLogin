@@ -2,7 +2,7 @@
   "expo": {
     "name": "FreedomAutoLogin",
     "slug": "FreedomAutoLogin",
-    "version": "0.9.0",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -31,7 +31,7 @@
       "backgroundColor": "#ec7f23"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.freedomautologin.app",
+      "package": "com.freedomautologin.app"
     },
     "androidNavigationBar": {
       "barStyle": "dark-content",

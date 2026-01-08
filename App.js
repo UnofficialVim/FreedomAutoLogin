@@ -5,16 +5,15 @@ import { styles } from './StyleSheet';
 import HomeScreen from './screens/HomeScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import EntryScreen from './screens/EntryScreen';
+import { AppProvider } from './utils/appContext';
 
 const Stack = createNativeStackNavigator();
 
 function Stackmanager() {
-
   const navigation = useNavigation();
   return (
-    <Stack.Navigator 
-    screenOptions={
-      {
+    <Stack.Navigator
+      screenOptions={{
         headerStyle: styles.headerStyle,
         animation: 'fade'
       }
@@ -50,7 +49,6 @@ function Stackmanager() {
           ),
         }}
       />
-
       <Stack.Screen
         name="Settings"
         component={SettingsScreen}
@@ -64,10 +62,11 @@ function Stackmanager() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stackmanager />
-    </NavigationContainer>
-
+    <AppProvider>
+      <NavigationContainer>
+        <Stackmanager />
+      </NavigationContainer>
+    </AppProvider>
   );
 }
 
