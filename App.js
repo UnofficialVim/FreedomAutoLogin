@@ -12,9 +12,8 @@ function Stackmanager() {
 
   const navigation = useNavigation();
   return (
-    <Stack.Navigator 
-    screenOptions={
-      {
+    <Stack.Navigator
+      screenOptions={{
         headerStyle: styles.headerStyle,
         animation: 'fade'
       }
@@ -63,11 +62,12 @@ function Stackmanager() {
 }
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stackmanager />
-     </NavigationContainer>
+  
 
+  return (
+      <NavigationContainer>
+        <Stackmanager />
+      </NavigationContainer>
   );
 }
 

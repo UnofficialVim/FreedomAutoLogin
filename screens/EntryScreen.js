@@ -1,17 +1,24 @@
 import { View, Pressable, Text, Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
-import { checkReadSMSPermission, checkReceiveSMSPermission } from '../utils/permissions';
+import { ensureAndroidPermissionGranted } from '../utils/permissions';
 import { getSecure } from '../utils/overrides';
 import { styles } from '../StyleSheet';
 import { LinearGradient } from 'expo-linear-gradient';
+import { PermissionsAndroid } from 'react-native';
 
 export default function EntryScreen() {
   const navigation = useNavigation();
 
-
   useEffect(() => {
-    checkSMSPermission();
+    if(ensureAndroidPermissionGranted(
+      PermissionsAndroid.PERMISSIONS.READ_SMS,
+      PermissionsAndroid.PERMISSIONS.RECEIVE_SMS
+    )) {
+      console.log("SMS permissions granted");
+    } else {
+      console.error("SMS permissions not granted");
+    }
   }, []);
 
   useEffect(() => {
@@ -30,11 +37,6 @@ export default function EntryScreen() {
 
     checkStoredData();
   }, []);
-
-  const checkSMSPermission = async () => {
-    checkReadSMSPermission();
-    checkReceiveSMSPermission();
-  }
 
   return (
     <View style={styles.container}>

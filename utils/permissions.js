@@ -1,65 +1,24 @@
 
-  import { PermissionsAndroid } from 'react-native';
+import { PermissionsAndroid } from 'react-native';
 
-  export const checkReadSMSPermission = async () => {
-      const granted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_SMS);
+export const ensureAndroidPermissionGranted = async (...permissions) => {
+  console.log("Checking Android permissions:", permissions);
+  try {
+    for (const permission of permissions) {
+      let granted = await PermissionsAndroid.check(permission);
+
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          requestReadSMSPermission();
-      }
-      else {
-          console.log("Read SMS permission granted");
-      }
-  };
-
-  export const checkReceiveSMSPermission = async () => {
-      const granted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECEIVE_SMS);
-      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          requestReceiveSMSPermission();
-      }
-      else {
-          console.log("Receive SMS permission granted");
-      }
-  };
-
-  const requestReadSMSPermission = async () => {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_SMS,
-          {
-            title: "SMS Permission",
-            message: "This app needs access to your SMS messages in order to auto verify your otp",
-            buttonNeutral: "Ask Me Later",
-            buttonNegative: "Cancel",
-            buttonPositive: "OK"
-          }
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("Read SMS permission granted");
-        } else {
-          console.log("Read SMS permission denied");
+        granted = await PermissionsAndroid.request(permission);
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          console.log(`${permission} permission denied`);
+          return false;
         }
-      } catch (err) {
-        console.warn(err);
       }
-    };
- const requestReceiveSMSPermission = async () => {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
-          {
-            title: "SMS Permission",
-            message: "This app needs access to your SMS messages in order to auto verify your otp",
-            buttonNeutral: "Ask Me Later",
-            buttonNegative: "Cancel",
-            buttonPositive: "OK"
-          }
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("Receive SMS permission granted");
-        } else {
-          console.log("Receive SMS permission denied");
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    };
+      console.log(`${permission} permission granted`);
+      return true;
+    }
+  } catch (error) {
+    console.error("Error checking permissions:", error);
+  }
+};
+

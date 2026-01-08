@@ -4,11 +4,11 @@ import { getSecure, setSecure } from '../utils/overrides';
 import { styles } from '../StyleSheet';
 import { LinearGradient } from 'expo-linear-gradient';
 
-
 export default function SettingsScreen() {
   const [numberValue, setNumberValue] = useState('');
   const [pinValue, setPinValue] = useState('');
   const [skipEntry, setSkipEntry] = useState(false);
+
 
   useEffect(() => {
     // Fetch the stored values from SecureStore when the component mounts
@@ -40,6 +40,7 @@ export default function SettingsScreen() {
 
   function handleSavePress() {
     saveData();
+
   }
 
   const saveData = async () => {
