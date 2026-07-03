@@ -5,6 +5,7 @@ import { ensureAndroidPermissionGranted } from '../utils/permissions';
 import { styles } from '../StyleSheet';
 import { LinearGradient } from 'expo-linear-gradient';
 import { PermissionsAndroid } from 'react-native';
+import { getSecure } from '../utils/overrides';
 
 export default function EntryScreen() {
   const navigation = useNavigation();
@@ -20,6 +21,24 @@ export default function EntryScreen() {
         console.error("Error while requesting permissions:", result.error);
       }
     });
+  }, []);
+
+
+  useEffect(() => {
+    const checkStoredData = async () => {
+      const phoneNumber = await getSecure('phoneNumber');
+      const pin = await getSecure('pin');
+      const skipEntry = await getSecure('skipEntryPage');
+
+      if (skipEntry && phoneNumber !== '' && pin !== '') {
+        navigation.replace('Home');
+      }
+      else if (phoneNumber === '' && pin === '') {
+        alert('Please enter your phone number and PIN in the Settings page');
+      }
+    };
+
+    checkStoredData();
   }, []);
 
   return (
