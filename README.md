@@ -14,6 +14,7 @@ cd FreedomAutoLogin
 npm install
 ```
 3. Build or run expo
+   
 Run:
 ```bash
 npx expo start
